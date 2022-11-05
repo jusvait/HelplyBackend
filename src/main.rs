@@ -1,8 +1,17 @@
 #[macro_use] extern crate rocket;
 
+use rocket::serde::{json::Json};
+
+mod structs;
+
+use crate::structs::ticket::*;
+
 #[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
+fn index() -> Json<Ticket> {
+    Json (Ticket {
+        email: String::from("hansen@hansen.hansenzone"),
+        description: String::from("hansen time")
+    })
 }
 
 #[launch]
