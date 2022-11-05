@@ -43,7 +43,7 @@ pub fn create_ticket(ticket: NewTicket) -> Ticket {
     let connection = &mut establish_connection();
 
     let new_ticket = NewTicket {
-        severity: Some(get_severity(&ticket.description)),
+        severity: Some(get_severity(&ticket.description, &ticket.reporter_estimate)),
         ..ticket
     };
 
@@ -81,7 +81,7 @@ pub fn add_note(ticket_id: i32, new_note: NewNote) -> Note {
 }
 
 fn get_severity(text: &str, estimate: &i32 ) -> String {
-    let weight = 0;
+    let mut weight = 0;
     weight += estimate + 1;
 
     if text.contains("kill") {
