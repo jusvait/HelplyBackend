@@ -5,6 +5,7 @@ pub mod schema;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use dotenvy::dotenv;
+use models::UpdateTicket;
 use std::env;
 
 pub fn establish_connection() -> PgConnection {
@@ -17,12 +18,20 @@ pub fn establish_connection() -> PgConnection {
 
 use self::models::{NewTicket, Ticket};
 
+pub fn get_all_tickets() -> Vec<Ticket> {
+    use self::schema::ticket::dsl::*;
+    let connection = &mut establish_connection();
+    return ticket
+        .load::<Ticket>(connection)
+        .expect("Error loading posts");
+}
+
 pub fn create_ticket(ticket: NewTicket) -> Ticket {
     use crate::schema::ticket;
     let connection = &mut establish_connection();
 
     let new_ticket = NewTicket { 
-        severity: get_severity(&ticket.description),
+        severity: Some(get_severity(&ticket.description)),
         ..ticket 
     };
 
@@ -32,12 +41,14 @@ pub fn create_ticket(ticket: NewTicket) -> Ticket {
         .expect("Error saving new post")
 }
 
-pub fn get_all_tickets() -> Vec<Ticket> {
-    use self::schema::ticket::dsl::*;
+pub fn update_ticket(ID: i32, newTicket: UpdateTicket) -> () {
+    use self::schema::ticket::dsl::{ticket, id};
     let connection = &mut establish_connection();
-    return ticket
-        .load::<Ticket>(connection)
-        .expect("Error loading posts");
+    
+    diesel::update(ticket.find(id))
+        .set(newTicket)
+        .execute(connection)
+        .expect("Error creating new User");
 }
 
 fn get_severity(text: &str) -> String {

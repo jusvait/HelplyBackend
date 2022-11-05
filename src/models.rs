@@ -28,6 +28,14 @@ pub struct NewTicket {
   pub status: String,
   pub reporter: Option<String>,
   pub reporter_email: Option<String>,
-  pub severity: String,
+  pub severity: Option<String>,
   pub reporter_estimate: i32
+}
+
+#[derive(Insertable, Serialize, Deserialize, Clone, AsChangeset)]
+#[serde(crate = "rocket::serde")]
+#[diesel(table_name = ticket)]
+pub struct UpdateTicket {
+  pub assigned_to: Option<String>,
+  pub status: String,
 }

@@ -1,6 +1,5 @@
 #[macro_use] extern crate rocket;
 
-use rocket::tokio::sync::{Mutex};
 use rocket::serde::json::{Json, Value, json};
 
 use self::models::*;
@@ -23,9 +22,14 @@ async fn new(ticket: Json<NewTicket>) -> Json<Ticket> {
     Json (ticket)
 }
 
+#[put("/<ticket_id>", format = "json", data = "<ticket>")]
+async fn update(ticket_id: i32, ticket: Json<UpdateTicket>) -> () {
+    update_ticket(ticket_id, ticket.0);
+}
+
 #[launch]
 fn stage() -> _ {
     rocket::build()
         .mount("/", routes![index])
-        .mount("/ticket", routes![get_many, new])
+        .mount("/ticket", routes![get_many, new, update])
 }
