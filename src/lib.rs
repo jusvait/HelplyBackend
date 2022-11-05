@@ -6,7 +6,7 @@ use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use dotenvy::dotenv;
 use std::{env};
-use models::{Ticket, NewTicket, UpdateTicket, Note};
+use models::{Ticket, NewTicket, UpdateTicket, Note, NewNote};
 
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
@@ -54,9 +54,24 @@ pub fn update_ticket(ID: i32, newTicket: UpdateTicket) -> Ticket {
     diesel::update(ticket.find(id))
         .set(newTicket)
         .execute(connection)
-        .expect("Error creating new User");
+        .expect("Error creating new Ticket");
 
     return get_one_ticket(ID).0;
+}
+
+pub fn add_note(ID: i32, newNote: NewNote) -> Note {
+    use crate::schema::note;
+    let connection = &mut establish_connection();
+
+    let new_note = NewNote { 
+        ticket_id: Some(ID),
+        ..newNote
+    };
+    
+    diesel::insert_into(note::table)
+        .values(&new_note)
+        .get_result(connection)
+        .expect("Error creating new Note")
 }
 
 fn get_severity(text: &str) -> String {

@@ -29,15 +29,21 @@ async fn new(ticket: Json<NewTicket>) -> Json<Ticket> {
     Json (ticket)
 }
 
-#[put("/<ticket_id>", format = "json", data = "<ticket>")]
+#[patch("/<ticket_id>", format = "json", data = "<ticket>")]
 async fn update(ticket_id: i32, ticket: Json<UpdateTicket>) -> Json<Ticket> {
     let ticket = update_ticket(ticket_id, ticket.0);
     Json (ticket)
+}
+
+#[post("/<ticket_id>/note", format = "json", data = "<note>")]
+async fn new_note(ticket_id: i32, note: Json<NewNote>) -> Json<Note> {
+    let note = add_note(ticket_id, note.0);
+    Json (note)
 }
 
 #[launch]
 fn stage() -> _ {
     rocket::build()
         .mount("/", routes![index])
-        .mount("/ticket", routes![get_many, get_one, new, update])
+        .mount("/ticket", routes![get_many, get_one, new, update, new_note])
 }

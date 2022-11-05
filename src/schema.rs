@@ -4,6 +4,7 @@ diesel::table! {
     note (id) {
         id -> Int4,
         ticket_id -> Nullable<Int4>,
+        text -> Text,
         created_at -> Timestamp,
         author -> Nullable<Varchar>,
     }

@@ -38,7 +38,7 @@ pub struct NewTicket {
 #[diesel(table_name = ticket)]
 pub struct UpdateTicket {
   pub assigned_to: Option<String>,
-  pub status: String,
+  pub status: Option<String>,
 }
 
 #[derive(Identifiable, Queryable, Associations, Serialize, Deserialize, Clone)]
@@ -48,6 +48,16 @@ pub struct UpdateTicket {
 pub struct Note {
   pub id: i32,
   pub ticket_id: Option<i32>,
+  pub text: String,
   pub created_at: NaiveDateTime,
   pub author: Option<String>
+}
+
+#[derive(Insertable, Serialize, Deserialize, Clone)]
+#[serde(crate = "rocket::serde")]
+#[diesel(table_name = note)]
+pub struct NewNote {
+  pub ticket_id: Option<i32>,
+  pub author: String,
+  pub text: String
 }
