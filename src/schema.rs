@@ -11,6 +11,6 @@ diesel::table! {
         reporter -> Nullable<Varchar>,
         reporter_email -> Nullable<Varchar>,
         severity -> Varchar,
-        reporter_esimate -> Int4,
+        reporter_estimate -> Int4,
     }
 }

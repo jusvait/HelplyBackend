@@ -9,5 +9,5 @@ CREATE TABLE ticket (
     reporter VARCHAR(255),
     reporter_email VARCHAR(255),
     severity VARCHAR(255) NOT NULL,
-    reporter_esimate INT NOT NULL
+    reporter_estimate INT NOT NULL
 );
