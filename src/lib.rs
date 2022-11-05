@@ -18,6 +18,12 @@ pub fn establish_connection() -> PgConnection {
 
 use self::models::{NewTicket, Ticket};
 
+pub fn get_one_ticket(ticket_id: i32) -> Ticket {
+    use self::schema::ticket::dsl::*;
+    let connection = &mut establish_connection();
+    return ticket.filter(id.eq(ticket_id)).first::<Ticket>(connection).expect("Could not find ticket");
+}
+
 pub fn get_all_tickets() -> Vec<Ticket> {
     use self::schema::ticket::dsl::*;
     let connection = &mut establish_connection();

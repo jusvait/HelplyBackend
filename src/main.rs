@@ -16,6 +16,12 @@ async fn get_many() -> Json<Vec<Ticket>> {
     Json (results)
 }
 
+#[get("/<ticket_id>")]
+async fn get_one(ticket_id: i32) -> Json<Ticket> {
+    let result = get_one_ticket(ticket_id);
+    Json (result)
+}
+
 #[post("/", format = "json", data = "<ticket>")]
 async fn new(ticket: Json<NewTicket>) -> Json<Ticket> {
     let ticket = create_ticket(ticket.0);
@@ -31,5 +37,5 @@ async fn update(ticket_id: i32, ticket: Json<UpdateTicket>) -> () {
 fn stage() -> _ {
     rocket::build()
         .mount("/", routes![index])
-        .mount("/ticket", routes![get_many, new, update])
+        .mount("/ticket", routes![get_many, get_one, new, update])
 }
