@@ -1,19 +1,12 @@
-FROM rust:1.65
+FROM rust:1.63.0
 
-RUN apt-get install -y libpq-dev
+ENV ROCKET_ADDRESS=0.0.0.0
+ENV ROCKET_PORT=8000
 
-RUN USER=root cargo new --bin helply_backend
-WORKDIR /helply_backend
+WORKDIR /app
+COPY . .
 
-COPY ./Cargo.toml ./Cargo.toml
-COPY ./Cargo.lock ./Cargo.lock
+RUN rustup default nightly
+RUN cargo build
 
-RUN cargo build --release
-RUN rm src/*.rs
-
-COPY ./src ./src
-
-RUN rm ./target/release/deps/helply_backend*
-RUN cargo install --path .
-
-CMD ["helply_backend"]
+CMD ["cargo", "run"]
