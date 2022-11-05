@@ -1,10 +1,11 @@
 use diesel::prelude::*;
 use rocket::{serde::{Serialize, Deserialize}};
 use chrono::{NaiveDateTime};
-use crate::schema::ticket;
+use crate::schema::{ticket, note};
 
-#[derive(Queryable, Serialize, Deserialize, Clone)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Clone)]
 #[serde(crate = "rocket::serde")]
+#[diesel(table_name = ticket)]
 pub struct Ticket {
   pub id: i32,
   pub email: String,
@@ -38,4 +39,14 @@ pub struct NewTicket {
 pub struct UpdateTicket {
   pub assigned_to: Option<String>,
   pub status: String,
+}
+
+#[derive(Identifiable, Queryable, Associations, Clone)]
+#[belongs_to(Ticket)]
+#[diesel(table_name = note)]
+pub struct Note {
+  pub id: i32,
+  pub ticket_id: Option<i32>,
+  pub created_at: NaiveDateTime,
+  pub author: String
 }

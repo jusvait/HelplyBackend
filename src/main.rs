@@ -7,6 +7,7 @@ use helply_backend::*;
 
 #[get("/")]
 fn index() -> Value {
+    
     json!({"status": "ok"})
 }
 

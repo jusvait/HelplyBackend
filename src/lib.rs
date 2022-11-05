@@ -5,8 +5,8 @@ pub mod schema;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use dotenvy::dotenv;
-use models::UpdateTicket;
-use std::env;
+use std::{env};
+use models::{Ticket, Note}
 
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
@@ -16,12 +16,12 @@ pub fn establish_connection() -> PgConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 
-use self::models::{NewTicket, Ticket};
-
-pub fn get_one_ticket(ticket_id: i32) -> Ticket {
-    use self::schema::ticket::dsl::*;
+pub fn get_one_ticket(ticket_id: i32) -> (Ticket, Vec<Note>) {
     let connection = &mut establish_connection();
-    return ticket.filter(id.eq(ticket_id)).first::<Ticket>(connection).expect("Could not find ticket");
+    let t = self::schema::ticket::dsl::ticket.filter(self::schema::ticket::dsl::id.eq(ticket_id)).first::<Ticket>(connection).expect("Could not find ticket");
+    let n = self::schema::note::dsl::note.filter(self::schema::note::dsl::ticket_id.eq(ticket_id)).load::<Note>(connection).expect("Could not find notes");
+
+    return (t,n)
 }
 
 pub fn get_all_tickets() -> Vec<Ticket> {
