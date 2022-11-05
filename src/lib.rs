@@ -47,7 +47,7 @@ pub fn create_ticket(ticket: NewTicket) -> Ticket {
         .expect("Error saving new post")
 }
 
-pub fn update_ticket(ID: i32, newTicket: UpdateTicket) -> () {
+pub fn update_ticket(ID: i32, newTicket: UpdateTicket) -> Ticket {
     use self::schema::ticket::dsl::{ticket, id};
     let connection = &mut establish_connection();
     
@@ -55,6 +55,8 @@ pub fn update_ticket(ID: i32, newTicket: UpdateTicket) -> () {
         .set(newTicket)
         .execute(connection)
         .expect("Error creating new User");
+
+    return get_one_ticket(ID);
 }
 
 fn get_severity(text: &str) -> String {

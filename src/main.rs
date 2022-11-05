@@ -29,8 +29,9 @@ async fn new(ticket: Json<NewTicket>) -> Json<Ticket> {
 }
 
 #[put("/<ticket_id>", format = "json", data = "<ticket>")]
-async fn update(ticket_id: i32, ticket: Json<UpdateTicket>) -> () {
-    update_ticket(ticket_id, ticket.0);
+async fn update(ticket_id: i32, ticket: Json<UpdateTicket>) -> Json<Ticket> {
+    let ticket = update_ticket(ticket_id, ticket.0);
+    Json (ticket)
 }
 
 #[launch]
