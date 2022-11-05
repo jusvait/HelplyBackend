@@ -17,13 +17,35 @@ pub fn establish_connection() -> PgConnection {
 
 use self::models::{NewTicket, Ticket};
 
-pub fn create_post(conn: &mut PgConnection, ticket: NewTicket) -> Ticket {
+pub fn create_ticket(ticket: NewTicket) -> Ticket {
     use crate::schema::ticket;
+    let connection = &mut establish_connection();
 
-    let new_post = NewTicket { ..ticket };
+    let new_ticket = NewTicket { 
+        severity: get_severity(&ticket.description),
+        ..ticket 
+    };
 
     diesel::insert_into(ticket::table)
-        .values(&new_post)
-        .get_result(conn)
+        .values(&new_ticket)
+        .get_result(connection)
         .expect("Error saving new post")
+}
+
+pub fn get_all_tickets() -> Vec<Ticket> {
+    use self::schema::ticket::dsl::*;
+    let connection = &mut establish_connection();
+    return ticket
+        .load::<Ticket>(connection)
+        .expect("Error loading posts");
+}
+
+fn get_severity(text: &str) -> String {
+    if text.contains("kill") {
+        return "High".to_owned()
+    } else if text.contains("die") {
+        return "moderate".to_owned()
+    } else {
+        return "low".to_owned()
+    }
 }
