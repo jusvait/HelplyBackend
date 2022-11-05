@@ -63,11 +63,15 @@ impl Fairing for CORS {
     }
 }
 
+#[options("/<_..>")]
+fn all_options() {
+    /* Intentionally left empty */
+}
 
 #[launch]
 fn stage() -> _ {
     rocket::build()
         .attach(CORS)
-        .mount("/", routes![index])
+        .mount("/", routes![index, all_options])
         .mount("/ticket", routes![get_many, get_one, create, update, create_note])
 }
