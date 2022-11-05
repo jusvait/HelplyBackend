@@ -5,6 +5,7 @@ use rocket::serde::{Serialize, Deserialize};
 #[derive(Clone)]
 pub struct Ticket {
   pub email: String,
-  pub description: String
+  pub description: String,
+  pub severity: Option<String>
 }
 
