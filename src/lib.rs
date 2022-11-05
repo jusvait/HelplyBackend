@@ -42,9 +42,9 @@ pub fn create_ticket(ticket: NewTicket) -> Ticket {
     use crate::schema::ticket;
     let connection = &mut establish_connection();
 
-    let new_ticket = NewTicket { 
+    let new_ticket = NewTicket {
         severity: Some(get_severity(&ticket.description)),
-        ..ticket 
+        ..ticket
     };
 
     diesel::insert_into(ticket::table)
@@ -56,7 +56,7 @@ pub fn create_ticket(ticket: NewTicket) -> Ticket {
 pub fn update_ticket(ticket_id: i32, new_ticket: UpdateTicket) -> Ticket {
     use self::schema::ticket::dsl::{ticket, id};
     let connection = &mut establish_connection();
-    
+
     diesel::update(ticket.find(id))
         .set(new_ticket)
         .execute(connection)
@@ -69,23 +69,32 @@ pub fn add_note(ticket_id: i32, new_note: NewNote) -> Note {
     use crate::schema::note;
     let connection = &mut establish_connection();
 
-    let new_note = NewNote { 
+    let new_note = NewNote {
         ticket_id: Some(ticket_id),
         ..new_note
     };
-    
+
     diesel::insert_into(note::table)
         .values(&new_note)
         .get_result(connection)
         .expect("Error creating new Note")
 }
 
-fn get_severity(text: &str) -> String {
+fn get_severity(text: &str, estimate: &i32 ) -> String {
+    let weight = 0;
+    weight += estimate + 1;
+
     if text.contains("kill") {
-        return "High".to_owned()
+        weight += 4
     } else if text.contains("die") {
+        weight += 2
+    }
+
+    if weight >= 10 {
+        return "high".to_owned()
+    } else if weight >= 5 {
         return "moderate".to_owned()
     } else {
-        return "low".to_owned()
+        return "low".to_owned();
     }
 }
