@@ -9,6 +9,7 @@ use crate::schema::{ticket, note};
 pub struct Ticket {
   pub id: i32,
   pub email: String,
+  pub name: String,
   pub description: String,
   pub created_at: NaiveDateTime,
   pub assigned_to: Option<String>,
@@ -24,6 +25,7 @@ pub struct Ticket {
 #[diesel(table_name = ticket)]
 pub struct NewTicket {
   pub email: String,
+  pub name: String,
   pub description: String,
   pub assigned_to: Option<String>,
   pub status: String,
