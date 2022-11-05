@@ -14,6 +14,7 @@ diesel::table! {
     ticket (id) {
         id -> Int4,
         email -> Varchar,
+        name -> Varchar,
         description -> Varchar,
         created_at -> Timestamp,
         assigned_to -> Nullable<Varchar>,
