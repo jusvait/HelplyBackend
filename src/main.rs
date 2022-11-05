@@ -7,7 +7,7 @@ use helply_backend::*;
 
 #[get("/")]
 fn index() -> Value {
-    
+
     json!({"status": "ok"})
 }
 
@@ -18,7 +18,7 @@ async fn get_many() -> Json<Vec<Ticket>> {
 }
 
 #[get("/<ticket_id>")]
-async fn get_one(ticket_id: i32) -> Json<Ticket> {
+async fn get_one(ticket_id: i32) -> Json<(Ticket, Vec<Note>)> {
     let result = get_one_ticket(ticket_id);
     Json (result)
 }

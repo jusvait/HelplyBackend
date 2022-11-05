@@ -41,12 +41,13 @@ pub struct UpdateTicket {
   pub status: String,
 }
 
-#[derive(Identifiable, Queryable, Associations, Clone)]
+#[derive(Identifiable, Queryable, Associations, Serialize, Deserialize, Clone)]
 #[belongs_to(Ticket)]
+#[serde(crate = "rocket::serde")]
 #[diesel(table_name = note)]
 pub struct Note {
   pub id: i32,
   pub ticket_id: Option<i32>,
   pub created_at: NaiveDateTime,
-  pub author: String
+  pub author: Option<String>
 }
