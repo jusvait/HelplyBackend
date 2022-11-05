@@ -16,6 +16,16 @@ use self::models::*;
 use diesel::prelude::*;
 use helply_backend::*;
 
+fn get_severity(text: &str) -> String {
+    if text.contains("kill") {
+        return "High".to_owned()
+    } else if text.contains("die") {
+        return "moderate".to_owned()
+    } else {
+        return "low".to_owned()
+    }
+}
+
 fn main() {
     use self::schema::ticket::dsl::*;
 
