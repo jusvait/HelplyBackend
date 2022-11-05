@@ -40,7 +40,6 @@ async fn new(ticket: Json<Ticket>, list: Tickets<'_>) -> Json<Ticket> {
     let mut new_ticket = ticket.0.clone();
     new_ticket.severity = Some(getSeverity(&new_ticket.description));
     tickets.push(new_ticket.clone());
-    print!("{:?}", new_ticket.severity);
     rocket::serde::json::Json(new_ticket)
 }
 
