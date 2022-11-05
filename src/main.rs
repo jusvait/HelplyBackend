@@ -7,7 +7,6 @@ use helply_backend::*;
 
 #[get("/")]
 fn index() -> Value {
-
     json!({"status": "ok"})
 }
 
@@ -24,7 +23,7 @@ async fn get_one(ticket_id: i32) -> Json<(Ticket, Vec<Note>)> {
 }
 
 #[post("/", format = "json", data = "<ticket>")]
-async fn new(ticket: Json<NewTicket>) -> Json<Ticket> {
+async fn create(ticket: Json<NewTicket>) -> Json<Ticket> {
     let ticket = create_ticket(ticket.0);
     Json (ticket)
 }
@@ -36,7 +35,7 @@ async fn update(ticket_id: i32, ticket: Json<UpdateTicket>) -> Json<Ticket> {
 }
 
 #[post("/<ticket_id>/note", format = "json", data = "<note>")]
-async fn new_note(ticket_id: i32, note: Json<NewNote>) -> Json<Note> {
+async fn create_note(ticket_id: i32, note: Json<NewNote>) -> Json<Note> {
     let note = add_note(ticket_id, note.0);
     Json (note)
 }
@@ -45,5 +44,5 @@ async fn new_note(ticket_id: i32, note: Json<NewNote>) -> Json<Note> {
 fn stage() -> _ {
     rocket::build()
         .mount("/", routes![index])
-        .mount("/ticket", routes![get_many, get_one, new, update, new_note])
+        .mount("/ticket", routes![get_many, get_one, create, update, create_note])
 }

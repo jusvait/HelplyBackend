@@ -18,8 +18,14 @@ pub fn establish_connection() -> PgConnection {
 
 pub fn get_one_ticket(ticket_id: i32) -> (Ticket, Vec<Note>) {
     let connection = &mut establish_connection();
-    let t = self::schema::ticket::dsl::ticket.filter(self::schema::ticket::dsl::id.eq(ticket_id)).first::<Ticket>(connection).expect("Could not find ticket");
-    let n = self::schema::note::dsl::note.filter(self::schema::note::dsl::ticket_id.eq(ticket_id)).load::<Note>(connection).expect("Could not find notes");
+    let t = self::schema::ticket::dsl::ticket
+        .filter(self::schema::ticket::dsl::id.eq(ticket_id))
+        .first::<Ticket>(connection)
+        .expect("Could not find ticket");
+    let n = self::schema::note::dsl::note
+        .filter(self::schema::note::dsl::ticket_id.eq(ticket_id))
+        .load::<Note>(connection)
+        .expect("Could not find notes");
 
     return (t,n)
 }
@@ -47,25 +53,25 @@ pub fn create_ticket(ticket: NewTicket) -> Ticket {
         .expect("Error saving new post")
 }
 
-pub fn update_ticket(ID: i32, newTicket: UpdateTicket) -> Ticket {
+pub fn update_ticket(ticket_id: i32, new_ticket: UpdateTicket) -> Ticket {
     use self::schema::ticket::dsl::{ticket, id};
     let connection = &mut establish_connection();
     
     diesel::update(ticket.find(id))
-        .set(newTicket)
+        .set(new_ticket)
         .execute(connection)
         .expect("Error creating new Ticket");
 
-    return get_one_ticket(ID).0;
+    return get_one_ticket(ticket_id).0;
 }
 
-pub fn add_note(ID: i32, newNote: NewNote) -> Note {
+pub fn add_note(ticket_id: i32, new_note: NewNote) -> Note {
     use crate::schema::note;
     let connection = &mut establish_connection();
 
     let new_note = NewNote { 
-        ticket_id: Some(ID),
-        ..newNote
+        ticket_id: Some(ticket_id),
+        ..new_note
     };
     
     diesel::insert_into(note::table)
